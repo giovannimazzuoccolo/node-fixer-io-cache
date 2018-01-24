@@ -1,0 +1,25 @@
+{
+  "name": "fixer-io-cache",
+  "version": "1.0.0",
+  "description": "Another wrapper for fixer.io with caching system",
+  "main": "node-fixer-io-cache.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giovannimazzuoccolo/node-fixer-io-cache.git"
+  },
+  "keywords": [
+    "fixer.io",
+    "money",
+    "exchange",
+    "rate"
+  ],
+  "author": "Giovanni Mazzuoccolo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/giovannimazzuoccolo/node-fixer-io-cache/issues"
+  },
+  "homepage": "https://github.com/giovannimazzuoccolo/node-fixer-io-cache#readme"
+}
