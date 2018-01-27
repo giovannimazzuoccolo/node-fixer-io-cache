@@ -16,7 +16,7 @@ function connect(request,callback) {
 
   	res.on('end', () => {
 			let result = JSON.parse(data);
-			console.log(result.rates);
+			//console.log(result.rates);
 			rateCache.set("cachedRates",{"request":request, "data" : result.rates});
 			return callback(result.rates);
 		});
@@ -27,7 +27,24 @@ function connect(request,callback) {
   	console.log("Error: " + err.message);
 });
 
+}
 
+
+function eurTo(amount,currency,callback) {
+	console.log('currency',currency);
+	connect('https://api.fixer.io/latest',(data) => {
+			//console.log('data',data['ZAR']);
+			return callback(false,amount * data[currency].toFixed(4));
+		});
+}
+
+function toEur(amount,currency,callback) {
+	connect('https://api.fixer.io/latest',(data) => {
+			return callback(false,amount * data[currency].toFixed(4));
+		});
+}
+
+function otherCurrencies() {
 
 }
 
@@ -40,13 +57,15 @@ function convert(amount,from,to,callback) {
 			callback(err,null);
 		}
 
-		/*if(from == "EUR") {
-				connect('https://api.fixer.io/latest?base='+to.toUpperCase(),(data) => {
-						return callback(((amount / 1).toFixed(4) * data[to]).toFixed(4));
-					});
-		}
+		if(from == "EUR") {
+				eurTo(amount,to.toUpperCase(),(err,data) => {
+						if(err) throw err;
 
-		if(to == "EUR") {
+							return callback(false,data);
+			});
+		} else {
+
+		/*if(to == "EUR") {
 				connect('https://api.fixer.io/latest?base='+from.toUpperCase(),(data) => {
 						return callback(((amount / data[from]).toFixed(4) * 1).toFixed(4));
 					});
@@ -54,9 +73,9 @@ function convert(amount,from,to,callback) {
 
 
 		connect('https://api.fixer.io/latest?symbols='+from.toUpperCase()+','+to.toUpperCase(),(data) => {
-				return callback(null,((amount / data[from]).toFixed(4) * data[to]).toFixed(4));
+				return callback(false,((amount / data[from]).toFixed(4) * data[to]).toFixed(4));
 			});
-
+	}
 
 }
 
@@ -64,12 +83,14 @@ function history(date,callback) {
 
 }
 
-convert(1,'USD','GBP',(err,response) => {
+/*convert(1,'USD','GBP',(err,response) => {
 	console.log(response);
 });
-
-convert(1,'EUR','ZAR',(err,response) => {
-	console.log(response);
+*/
+convert(2,'EUR','ZAR',(err,response) => {
+	//if(err) throw err;
+	console.log('sonoqui');
+	console.log("response",response);
 });
 
 //module.export();
