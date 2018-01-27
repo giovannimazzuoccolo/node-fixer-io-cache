@@ -40,14 +40,24 @@ function eurTo(amount,currency,callback) {
 
 function toEur(amount,currency,callback) {
 	connect('https://api.fixer.io/latest',(data) => {
-			return callback(false,amount * data[currency].toFixed(4));
+				console.log('exchange',data[currency]);
+			return callback(false,amount / data[currency].toFixed(4));
 		});
 }
 
-function otherCurrencies() {
-
+function otherCurrencies(amount,from,to,callback) {
+	connect('https://api.fixer.io/latest?symbols='+from.toUpperCase()+','+to.toUpperCase(),(data) => {
+			return callback(false,((amount / data[from]).toFixed(4) * data[to]).toFixed(4));
+	});
 }
 
+
+function ratesList() {
+	connect('https://api.fixer.io/latest',(data) => {
+				data['EUR'] = 1;
+				console.log('rates',Object.keys(data));
+		});
+}
 
 function convert(amount,from,to,callback) {
 
@@ -63,18 +73,23 @@ function convert(amount,from,to,callback) {
 
 							return callback(false,data);
 			});
+		} else if(to == 'EUR') {
+				toEur(amount,from.toUpperCase(),(err,data) => {
+						if(err) throw err;
+
+							return callback(false,data);
+			});
+
 		} else {
 
-		/*if(to == "EUR") {
-				connect('https://api.fixer.io/latest?base='+from.toUpperCase(),(data) => {
-						return callback(((amount / data[from]).toFixed(4) * 1).toFixed(4));
-					});
-		}*/
+
+			otherCurrencies(amount,from,to, (err,data) => {
+				if(err) throw err;
+
+					return callback(false,data)
+		});
 
 
-		connect('https://api.fixer.io/latest?symbols='+from.toUpperCase()+','+to.toUpperCase(),(data) => {
-				return callback(false,((amount / data[from]).toFixed(4) * data[to]).toFixed(4));
-			});
 	}
 
 }
@@ -84,13 +99,21 @@ function history(date,callback) {
 }
 
 /*convert(1,'USD','GBP',(err,response) => {
-	console.log(response);
+	console.log('usd-gbp',response);
 });
-*/
-convert(2,'EUR','ZAR',(err,response) => {
+
+convert(2,'EUR','GBP',(err,response) => {
 	//if(err) throw err;
 	console.log('sonoqui');
 	console.log("response",response);
 });
+*/
+/*convert(2,'GBP','EUR',(err,response) => {
+	//if(err) throw err;
+	console.log('sonoqui');
+	console.log("response",response);
+});
+*/
 
+//ratesList();
 //module.export();
