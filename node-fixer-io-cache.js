@@ -95,7 +95,10 @@ function convert(amount,from,to,callback) {
 }
 
 function history(date,callback) {
+	connect('https://api.fixer.io/'+date,(data) => {
 
+		return callback(data);
+});
 }
 
 /*convert(1,'USD','GBP',(err,response) => {
@@ -115,5 +118,13 @@ convert(2,'EUR','GBP',(err,response) => {
 });
 */
 
+history('2011-09-11',(data) => {
+	console.log(data);
+});
+
 //ratesList();
-//module.export();
+module.exports = function(){
+	this.convert = convert;
+	this.ratesList = ratesList;
+	this.history = history;
+}
